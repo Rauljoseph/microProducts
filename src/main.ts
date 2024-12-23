@@ -11,6 +11,11 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.enableCors({
+    origin: 'http://localhost:5173', // URL de tu frontend
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    credentials: true, // Si necesitas enviar cookies o encabezados de autorización
+  });
   await app.listen(process.env.PORT ?? 3000);
   console.log('server listening on PORT', process.env.PORT);
 }
