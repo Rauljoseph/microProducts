@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateProduct } from 'src/application/usecases/products/createProduct';
-import { FindById } from 'src/application/usecases/products/findById';
-import { ProductController } from 'src/infrastructure/controllers/products/product';
+import { CreateProduct } from '../../../src/application/usecases/products/createProduct';
+import { FindById } from '../../../src/application/usecases/products/findById';
+import { DeleteProduct } from '../../../src/application/usecases/products/deleteProduct';
+import { FindAllProducts } from '../../../src/application/usecases/products/findAll';
+import { FindByNameProduct } from '../../../src/application/usecases/products/findByName';
+import { UpdateProduct } from '../../../src/application/usecases/products/updateProduct';
+import { ProductController } from '../../../src/infrastructure/controllers/products/product';
 
 describe('ProductController', () => {
   let productController: ProductController;
@@ -33,6 +37,30 @@ describe('ProductController', () => {
               stock: 25,
               category: 'Electronics',
             }),
+          },
+        },
+        {
+          provide: DeleteProduct, // Mock para DeleteProduct
+          useValue: {
+            execute: jest.fn().mockResolvedValue({ success: true }),
+          },
+        },
+        {
+          provide: FindAllProducts, // Mock para FindAllProducts
+          useValue: {
+            execute: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: FindByNameProduct, // Mock para FindByNameProduct
+          useValue: {
+            execute: jest.fn().mockResolvedValue(null),
+          },
+        },
+        {
+          provide: UpdateProduct, // Mock para UpdateProduct
+          useValue: {
+            execute: jest.fn().mockResolvedValue({ success: true }),
           },
         },
       ],
