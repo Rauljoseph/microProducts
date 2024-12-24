@@ -2,11 +2,20 @@ name: Deployment Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened,synchronize]
 
 jobs:
-  deploy:
+  avoid_redundancy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Redundants Builds
+        uses: styfle/cancel-workflow-action
+        with:
+          access_token: ${{ github.token }}
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,18 +28,60 @@ jobs:
         run: npm install --no-audit --no-fund --no-optional
       - name : Lint
         run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund --no-optional
       - name : Build
         run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+  
+  test:
+    needs: [lint, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund --no-optional
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
       - name : Test
         run: npm run test
+
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
       - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.13.15 # This is the action
+        if: "${{ github.event_name == 'push' }} "
+        uses: akhileshns/heroku-deploy@v3.13.15 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_API_APP}} #Must be unique in Heroku
+          heroku_app_name: ${{secrets.HEROKU_API_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
-          healthCheck: "https://${{secrets.HEROKU_API_APP}}/health"
+          healthCheck: "https://${{secrets.HEROKU_API_APP}}.herokuapp.com/health"
           rollbackonhealthcheckfailed: true

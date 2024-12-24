@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ProductModel } from '../model/product';
 
 @Module({
   imports: [
@@ -14,10 +15,18 @@ import { SequelizeModule } from '@nestjs/sequelize';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
+        models: [ProductModel],
         autoLoadModels: true,
         synchronize: true,
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       }),
     }),
+    SequelizeModule.forFeature([ProductModel]),
   ],
 })
 export class DatabaseModule {}
