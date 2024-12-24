@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Redundants Builds
-        uses: styfle/cancel-workflow-action
+        uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
   lint:
@@ -42,7 +42,7 @@ jobs:
         run: npm install --no-audit --no-fund --no-optional
       - name: Build
         run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist
@@ -59,7 +59,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm install --no-audit --no-fund --no-optional
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v2
         with:
           name: dist
           path: dist
