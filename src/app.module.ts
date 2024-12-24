@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ProductModule } from './infrastructure/modules/product.module';
 import { DatabaseModule } from './infrastructure/database/sequelizePG';
 import { ConfigModule } from '@nestjs/config';
+import { HealthController } from './infrastructure/controllers/health';
 
 @Module({
   imports: [
@@ -11,5 +12,6 @@ import { ConfigModule } from '@nestjs/config';
     ProductModule,
     DatabaseModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
