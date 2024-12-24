@@ -12,9 +12,8 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: '*',
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    credentials: true,
   });
   await app.listen(process.env.PORT ?? 3000);
   console.log('server listening on PORT', process.env.PORT);

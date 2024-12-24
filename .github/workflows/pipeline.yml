@@ -83,5 +83,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_API_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
-          healthCheck: "https://${{ secrets.HEROKU_API_APP }}.herokuapp.com/health"
+          healthCheck: "https://ecommerce-practica-deploy.herokuapp.com/health"
           rollbackonhealthcheckfailed: true
