@@ -3,6 +3,7 @@ import { ProductModule } from './infrastructure/modules/product.module';
 import { DatabaseModule } from './infrastructure/database/sequelizePG';
 import { ConfigModule } from '@nestjs/config';
 import { HealthController } from './infrastructure/controllers/health';
+import { AppController } from './infrastructure/controllers/root';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { HealthController } from './infrastructure/controllers/health';
     ProductModule,
     DatabaseModule,
   ],
-  controllers: [HealthController],
+  controllers: [HealthController, AppController],
 })
 export class AppModule {}
